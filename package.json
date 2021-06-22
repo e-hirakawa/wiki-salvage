@@ -1,0 +1,35 @@
+{
+  "name": "wiki-salvage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node src/index.ts",
+    "dev:watch": "ts-node-dev --respawn src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e-hirakawa/wiki-salvage.git"
+  },
+  "keywords": [],
+  "author": "Eiji Hirakawa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/e-hirakawa/wiki-salvage/issues"
+  },
+  "homepage": "https://github.com/e-hirakawa/wiki-salvage#readme",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/node": "^14.17.3",
+    "axios": "^0.21.1",
+    "csv-writer": "^1.6.0",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.3.4",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  }
+}
