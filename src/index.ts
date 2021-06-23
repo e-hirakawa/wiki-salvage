@@ -1,16 +1,11 @@
 import * as csvWriter from "csv-writer";
 import Comfirm from "./comfirm";
 import { sleep } from "./utils";
-import Wiki, { WikiDocument } from "./wiki";
+import Wiki from "./wiki";
 
 main();
 
-async function main() {
-    const agreed = await Comfirm.show("wikiからの収集を開始しますか？");
-    if (!agreed) {
-        return;
-    }
-
+async function salvage(fileNumber: number, recordCount: number) {
     const writer = csvWriter.createObjectCsvWriter({
         path: `./out/out_${new Date().getTime()}.csv`,
         header: [
@@ -27,24 +22,38 @@ async function main() {
             { id: "text6", title: "記事本文6" },
             { id: "text7", title: "記事本文7" },
             { id: "text8", title: "記事本文8" },
-            { id: "text9", title: "記事本文9" }
+            { id: "text9", title: "記事本文9" },
+            { id: "date", title: "作成日時" },
+            { id: "status", title: "ステータス" },
         ]
     });
 
     const wiki = new Wiki();
     try {
-        const docs: WikiDocument[] = [];
-        const list = await wiki.next();
-        for (const item of list) {
-            const doc = await wiki.document(item.id);
-            if (doc) {
-                docs.push(doc);
-            }
-            await sleep(1000);
+        const max = Math.ceil(recordCount / 10);
+        for (let count = 0; count < max; count++) {
+            console.log(`--- progress${fileNumber} (${count}/${max}) ---`);
+            const list = await wiki.next(10);
+            const ids = list.map(item => item.id);
+            const docs = await wiki.document(ids);
+            await writer.writeRecords(docs);
+            await sleep(3000);
         }
-        await writer.writeRecords(docs);
     } catch (e) {
         console.error('取得失敗', e)
     }
+}
+
+async function main() {
+    const agreed = await Comfirm.show("wikiからの収集を開始しますか？");
+    if (!agreed) {
+        return;
+    }
+    const docCount = 1000;
+    const fileCount = 300;
+    for (let count = 0; count < fileCount; count++) {
+        await salvage(count, docCount);
+    }
+
     console.log("🦖 DONE 🦖");
 }
